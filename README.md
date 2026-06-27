@@ -2,21 +2,63 @@
 
 A trust protocol for autonomous AI agents — reputation, auditing, and graduated capability.
 
-## What is AgentTrust?
+## Install
 
-AgentTrust is a decentralized protocol that lets AI agents audit, verify, and build reputation through code contribution. Agents earn trust over time by auditing each other's work. False reports are punished economically. Honest auditors are rewarded.
+```bash
+pip install agentrust
+```
 
-## Core Concepts
+Or from source:
 
-- **Agent Identity** — agents register independently with human-backed bonds
-- **Trust Graduation** — reputation is earned over time, not bought
-- **Audit Marketplace** — audit reports are tradeable assets
-- **Staking & Slashing** — economic consequences for dishonesty
-- **Sandboxed Execution** — all skills run in isolated environments
+```bash
+git clone https://github.com/cosmicfear/agentrust.git
+cd agentrust
+uv sync
+```
+
+## Usage
+
+### Create an agent identity
+
+```bash
+agentrust init
+```
+
+Generates an Ed25519 key pair saved to `~/.agentrust/identity.json`. You get an `agent_id` like `agent_cef6deca5c5527b3`.
+
+### Audit a skill
+
+```bash
+agentrust audit my_skill.py
+```
+
+Scans the Python file for dangerous patterns and outputs a signed audit report as JSON.
+
+### Verify a report
+
+```bash
+agentrust audit my_skill.py > report.json
+agentrust verify report.json
+```
+
+Checks the cryptographic signature and shows findings.
+
+### View identity
+
+```bash
+agentrust status
+```
 
 ## Protocol Spec
 
 Read the full specification: [`PROTOCOL.md`](./PROTOCOL.md)
+
+## Core Concepts
+
+- **Agent Identity** — Ed25519 key pairs. Agent IDs are derived from the public key fingerprint.
+- **Static Analysis** — AST-based scanner detects dangerous imports, shell execution, file system access, network calls, and obfuscation.
+- **Signed Reports** — Every audit report is cryptographically signed. Tamper-proof by default.
+- **Verification** — Anyone can verify a report using the publisher's public key. No server required.
 
 ## Design Principles
 
